@@ -6,6 +6,7 @@ import (
   "net"
   "os"
   // "os/exec"
+  "syscall"
   "time"
   "fmt"
   "encoding/json"
@@ -81,6 +82,16 @@ func handleClient(conn net.Conn) {
         time := time.Now().Format(time.RFC3339)
 
         ret += "\"time\":\"" + time + "\","
+      case "uptime":
+        var info syscall.Sysinfo_t
+
+        err := syscall.Sysinfo(&info)
+
+        if err != nil {
+          return
+        }
+
+        return
       default:
         conn.Write([]byte("{\"code\":-3,\"data\":{\"message\":\"Unknown parameter (" + param + ")\"}}"))
 
